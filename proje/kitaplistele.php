@@ -1,0 +1,59 @@
+
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="sayfa">
+<div class="ust">
+<a id="baslik2">Kütüphane Kayıt Sistemi</a><br><br><br><br>
+<ul id="menu">
+<li><a href="index.php">Anasayfa</a></li>
+<li><a href="kitap.php">Kitap İşlemleri</a></li>
+<li><a href="uye.php">Üye İşlemleri</a></li>
+</ul></div>
+
+<div class="section">
+<?php
+
+	$baglanti = mysqli_connect("localhost","root","","kutuphane");
+	if($baglanti->connect_error){
+		die("Bağlantı kurulamadı!".$baglanti->connect_error);
+	}
+	$sql2 = "SELECT kitap_id, kitapAd, Isbn, yayinTarihi, sayfaSayisi, kategori_id, kategori, yayinevi_id, yayinEviAd, yazar_id, yazar FROM kitaplar";
+	$sonuc2 = $baglanti->query($sql2);
+	if($sonuc2->num_rows > 0){
+		while($bag = $sonuc2->fetch_assoc()){
+			echo "<tr><td><h5><font color=yellow>" . $bag["kitap_id"] . "</td>&nbsp<td>" . $bag["kitapAd"]."</td>&nbsp<td>" . $bag["Isbn"]."</td>&nbsp<td>" . $bag["yayinTarihi"]."</td>&nbsp<td>" . $bag["sayfaSayisi"]."</td>&nbsp<td>" .
+			$bag["kategori_id"] . "</td>&nbsp<td>" . $bag["kategori"] . "</td>&nbsp<td>" . $bag["yayinevi_id"] ."</td>&nbsp<td>" . $bag["yayinEviAd"] . "</td>&nbsp<td>" .$bag["yazar_id"] . "</td>&nbsp<td>".
+			$bag["yazar"] . "</font></h5></td></tr><br>";
+		}
+		echo "</table>";
+	}else { echo "<font color=red><h5>Sonuç yok</h5></font>"; }
+	
+$baglanti->close();
+	
+	
+	$kitapsil=isset($_POST['kitapsil']) ? $_POST["kitap_id"] : '';
+	$con = mysqli_connect("localhost","root","","kutuphane");
+	$sorgu=$con->query("DELETE FROM kitaplar where kitap_id='$kitapsil'");
+	if($con->affected_rows>0){
+		echo $con->affected_rows . "<h3><br><br><br><br>Kayıt Silindi</h3>";
+	}//else{
+		//echo "<h3><br><br><br><br>Herhangi bir kayıt silinemedi.</h3>";
+	//}
+	
+
+?>
+<table>
+<form>
+<tr><td><font color="ocean"><h3>Silmek istediğiniz kitabın Id'sini giriniz:</h3></font></td>
+<td><input type="text" name="kitap_id"></td>
+<td><button type="submit" name="sil">Sil</button></td></tr>
+</form>
+</table>
+</div>
+</div>
+</body>
+</html>
